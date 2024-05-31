@@ -107,33 +107,70 @@ def print_video_info(video_dict, ai=False, viewcount_thre=0):
 
 
 
-playlist = Playlist('https://www.youtube.com/playlist?list=PLEFin5ZtEWUpoUrRgsK5hbkLTjkvISOyP')
+## playlist
+# playlist = Playlist('https://www.youtube.com/playlist?list=PLEFin5ZtEWUpoUrRgsK5hbkLTjkvISOyP')
+#
+# print(f'Videos Retrieved: {len(playlist.videos)}')
+#
+# while playlist.hasMoreVideos:
+#     print('Getting more videos...')
+#     playlist.getNextVideos()
+#     print(f'Videos Retrieved: {len(playlist.videos)}')
+#
+# print('Found all the videos.')
+#
+# result_rows = []
+# count = 0
+# for i in playlist.videos:
+#     result_rows.append(print_video_info(i))
+#     count += 1
+#     if count %10 == 0:
+#         print(count)
 
-print(f'Videos Retrieved: {len(playlist.videos)}')
 
-while playlist.hasMoreVideos:
-    print('Getting more videos...')
-    playlist.getNextVideos()
-    print(f'Videos Retrieved: {len(playlist.videos)}')
+def main():
+    fields = ['cover_singer', 'original_singer', 'url', 'title', 'views', 'likes', 'publish_date', 'keywords', 'description']
+    artist = "Taylor Swift"
 
-print('Found all the videos.')
+    result_rows = []
+    count = 0
+    index = 0
+    videoSearch = VideosSearch(artist)
+    if index == 0:
+        videos = videoSearch.result()["result"]
+        print(f'Videos Retrieved: {len(videos)}')
+        for i in videos:
+            result_rows.append(print_video_info(i))
+            count += 1
+            if count %10 == 0:
+                print(count)
+        index += 1
 
-result_rows = []
-count = 0
-for i in playlist.videos:
-    result_rows.append(print_video_info(i))
-    count += 1
-    if count %10 == 0:
-        print(count)
+    while index > 0 and videoSearch.next():
+        videoSearch.next()
+        videos = videoSearch.result()["result"]
+        print(f'Videos Retrieved: {len(videos)}')
+        for i in videos:
+            result_rows.append(print_video_info(i))
+            count += 1
+            if count %10 == 0:
+                print(count)
+        if len(videos) == 0:
+            break
 
-fields = ['cover_singer', 'original_singer', 'url', 'title', 'views', 'likes', 'publish_date', 'keywords', 'description']
-filename = 'bbc.csv'
-with open(filename, 'w') as csvfile:
+
+
+    # videoSearch.next()
+
+    filename = f'{artist}.csv'
+    with open(filename, 'w') as csvfile:
     # creating a csv dict writer object
-    writer = csv.DictWriter(csvfile, fieldnames=fields)
- 
+        writer = csv.DictWriter(csvfile, fieldnames=fields)
     # writing headers (field names)
-    writer.writeheader()
- 
+        writer.writeheader()
     # writing data rows
-    writer.writerows(result_rows)
+        writer.writerows(result_rows)
+
+
+if __name__ == '__main__':
+    main()

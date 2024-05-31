@@ -7,7 +7,7 @@ from itertools import filterfalse
 import csv
 import pandas as pd
 
-df = pd.read_csv('wiki.csv',header=None)
+df = pd.read_csv('Taylor Swift.csv',header=None)
 unique_values = df.apply(set)
 unique_singers = sorted(unique_values[0].union(unique_values[1]))
 
@@ -20,24 +20,24 @@ def get_likes(pytube_instance):
         return int(like_str.replace(',', ''))
     return False
 
-def check_singers(video_title, video_description, singer_name):
-    string = video_title + video_description
-    return 'ai' in string.lower() and 'cover' in string.lower() and singer_name.lower() in string.lower()
-    '''
+def check_singers(video_title, video_description):
 
-    if not ('ai' in string.lower() and 'cover' in string.lower()):
+    video_title = str(video_title)
+    video_description = str(video_description)
+    if not ('ai cover' in video_description.lower() or 'ai cover' in video_title.lower()):
         return False #[]
-    else:
-        True
     found_singers = set()
     string = video_title + video_description
     for singer in unique_singers:
+        singer = str(singer)
         if singer.lower() in string.lower():
             found_singers.add(singer)
             if len(found_singers) >= 1:
                 return True #sorted(found_singers, key=lambda x: string.lower().index(x.lower()))
     return False #[]
-    '''
+
+
+
 
 
 
